@@ -1,0 +1,65 @@
+class LinkedList
+{
+Node head;
+class Node
+{
+int data;
+Node next;
+Node(int d)
+{
+data=d;
+next=null;
+}
+}
+public void push(int newdata)
+{
+Node newnode=new Node(newdata);
+newnode.next=head;
+head=newnode;
+}
+public void insertafter(Node prevnode,int newdata)
+{
+if(prevnode==null)
+{
+System.out.println("There is no node");
+}
+Node newnode=new Node(newdata);
+newnode.next=prevnode.next;
+prevnode.next=newnode;
+}
+public void append(int newdata)
+{
+Node newnode=new Node(newdata);
+if(head==null)
+{
+head=newnode;
+return;
+}
+newnode.next=null;
+Node last=head;
+while(last.next!=null)
+{
+last=last.next;
+}
+last.next=newnode;
+}
+public void printlist()
+{
+Node temp=head;
+while(temp!=null)
+{
+System.out.println(temp.data+" ");
+temp=temp.next;
+}
+}
+public static void main(String[] args)
+{
+LinkedList list=new LinkedList();
+list.push(1);
+list.push(3);
+list.push(9);
+list.append(10);
+list.insertafter(list.head.next,5);
+list.printlist();
+}
+}
