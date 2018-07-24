@@ -1,0 +1,20 @@
+import os, fnmatch
+#in this we are finding the files based on some regex we enter and then we rename them and put them in another folder
+def find(pattern,path):
+    result=[]
+    #i=0
+   # print(str(i))
+    for root,dirs,files in os.walk(path):
+        for name in files:
+            if(fnmatch.fnmatch(name,pattern)):
+                oldname=os.path.join(root,name)
+                #newname=os.path.join(root,")
+                if(name[7]=='.'):
+                    os.rename(oldname,'C:\\Users\\rakesh.bachu\\Desktop\\Long Forms\\MP_PRE after numbering\\'+name[6]+'.prj')
+                elif(name[8]=='.'):
+                    os.rename(oldname,'C:\\Users\\rakesh.bachu\\Desktop\\Long Forms\\MP_PRE after numbering\\'+name[6]+name[7]+'.prj')
+                else:
+                    os.rename(oldname,'C:\\Users\\rakesh.bachu\\Desktop\\Long Forms\\MP_PRE after numbering\\'+name[6]+name[7]+name[8]+'.prj')
+                #i=i+1
+                result.append(os.path.join(root,name))
+    return result
