@@ -1,0 +1,22 @@
+import requests
+import pandas as pd
+#in this we are taking the names we are going to give to files from an excel document.
+df=pd.read_excel('C:\\Users\\rakesh.bachu\\Desktop\\ACdata.xlsx',sheetname=0)
+mylist=df['LIST OF CONSTITUENCIES'].tolist()
+#print(mylist)
+#print(len(mylist))
+for i in range(1,len(mylist)+1):
+    #naming the files accordingly with numbers.
+    if(i<10):
+        fileurl="http://www.ceoandhra.nic.in/GE_2004/AC_00"+str(i)+".pdf"
+    elif(i>=10 and i<100):
+        fileurl="http://www.ceoandhra.nic.in/GE_2004/AC_0"+str(i)+".pdf"
+    else:
+        fileurl="http://www.ceoandhra.nic.in/GE_2004/AC_"+str(i)+".pdf"
+    #file getting downloaded
+    r=requests.get(fileurl,stream=True)
+    #here we are giving the file name and writing it chunk by chunk.
+    with open(mylist[i-1]+".pdf","wb") as pdf:
+        for chunk in r.iter_content(chunk_size=1024):
+            if chunk:
+                pdf.write(chunk)
