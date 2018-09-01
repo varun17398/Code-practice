@@ -1,36 +1,69 @@
-#In this we are calculating the no.of good words and bad words and we calculate the ratio and state whether the given statement is what.
-
+import json
+from textblob import TextBlob
 import nltk.classify.util
 from nltk.classify import NaiveBayesClassifier
 from nltk.corpus import names
- 
+from nltk.corpus import stopwords
+#from nltk.stem.wordnet import WordNetLemmatizer
+#from nltk.stem.porter import PorterStemmer 
+sw=stopwords.words("english")
+#data=[]
+f=open("cmnts.txt","r")
+data=f.read()
+data=data.lower()
+l=[]
+blob=TextBlob(data)
+blob.correct()
+for s in blob.sentences:
+    l.append(list(s.words.singularize()))
+
+def nested_remove(L, x):
+    if x in L:
+        L.remove(x)
+    else:
+        for element in L:
+            if type(element) is list:
+                nested_remove(element, x)
+    
+for k in l:
+    for w in k:
+        for q in sw:
+            if(w==q):
+                nested_remove(l,w)
+
 def word_feats(words):
-    return dict([(word, True) for word in words])
- 
-positive_vocab = [ 'awesome', 'outstanding', 'fantastic', 'terrific', 'good', 'nice', 'great', ':)' ]
-negative_vocab = [ 'bad', 'terrible','useless', 'hate', ':(' ]
-neutral_vocab = [ 'movie','the','sound','was','is','actors','did','know','words','not' ]
- 
-positive_features = [(word_feats(pos), 'pos') for pos in positive_vocab]
-negative_features = [(word_feats(neg), 'neg') for neg in negative_vocab]
-neutral_features = [(word_feats(neu), 'neu') for neu in neutral_vocab]
- 
-train_set = negative_features + positive_features + neutral_features
- 
-classifier = NaiveBayesClassifier.train(train_set) 
- 
-# Predict
-neg = 0
-pos = 0
-sentence = "Awesome movie, I liked it, but i hate it"
-sentence = sentence.lower()
-words = sentence.split(' ')
-for word in words:
-    classResult = classifier.classify( word_feats(word))
-    if classResult == 'neg':
-        neg = neg + 1
-    if classResult == 'pos':
-        pos = pos + 1
- 
-print('Positive: ' + str(float(pos)/len(words)))
-print('Negative: ' + str(float(neg)/len(words)))
+    return dict([(word,True) for word in words])
+
+
+p=open("pos.txt","r")
+post=p.read()
+positivewords=post.split("\n")
+n=open("neg.txt","r")
+negt=n.read()
+negativewords=negt.split("\n")
+
+posfeatures=[(word_feats(pos),'pos') for pos in positivewords]
+negfeatures=[(word_feats(neg),'neg') for neg in negativewords]
+
+train_set=posfeatures+negfeatures
+
+classifier=NaiveBayesClassifier.train(train_set)
+
+neg=0
+pos=0
+k=0
+for a in l:
+    for word in a:
+        classResult=classifier.classify(word_feats(word))
+        k=k+1
+        if classResult=='neg':
+            neg=neg+1
+        if classResult=='pos':
+            pos=pos+1
+print('Positive: '+str(float(pos)/k))
+print('Negative: '+str(float(neg)/k))
+
+#print(blob.sentiment)
+#words=data.split(" ")
+#print(blob.sentences)
+#print(str(data))
