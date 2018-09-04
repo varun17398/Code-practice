@@ -1,0 +1,51 @@
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+page=requests.get('http://myneta.info/assam2016/expense.php?candidate_id=844')
+soup=BeautifulSoup(page.text,'html.parser')
+#print(soup.div['class'])
+
+#s=soup.find_all("div")
+table=soup.find(class_="table1")
+row=table.find_all("tr")
+#print(row)
+#tabledetail=soup.find(class_='divTableWithFloatingHeader')
+#tableitems=tabledetail.find_all('tr')
+n_rows=0
+n_columns=0
+column_names=[]
+
+for i in table.find_all('tr'):
+    # Determine the number of rows in the table
+    td_tags = i.find_all('td')
+    if len(td_tags) > 0:
+        n_rows+=1
+        if n_columns == 0:
+            # Set the number of columns for our table
+            n_columns = len(td_tags)
+            # Handle column names if we find them
+            th_tags = i.find_all('th')
+            if len(th_tags) > 0 and len(column_names) == 0:
+                for th in th_tags:
+                    column_names.append(th.get_text())
+    
+            # Safeguard on Column Titles
+if len(column_names) > 0 and len(column_names) != n_columns:
+    raise Exception("Column titles do not match the number of columns")
+
+c = column_names if len(column_names) > 0 else range(0,n_columns)
+
+newtable=pd.DataFrame(columns=c,index=range(0,n_rows))
+print(newtable[3][4])
+rowmarker=0
+
+for i in table.find_all('tr'):
+    columnmarker=0
+    columns=i.find_all('td')
+    for j in columns:
+        newtable.iat[rowmarker,columnmarker]=j.get_text()
+        columnmarker+=1
+    if len(c)>0:
+        rowmarker+=1
+
+print(newtable)
