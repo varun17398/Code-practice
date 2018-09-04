@@ -1,0 +1,33 @@
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+page=requests.get('http://myneta.info/assam2016/expense.php?candidate_id=844')
+soup=BeautifulSoup(page.text,'html.parser')
+#print(soup.div['class'])
+
+#s=soup.find_all("div")
+table=soup.find(class_="table1")
+rows=table.find_all("tr")
+data=[]
+
+for row in rows:
+    cols=row.find_all('td')
+    cols=[ele.text.strip() for ele in cols]
+    data.append([ele for ele in cols if ele])
+
+data1=data[0]
+#data2=data[1]
+print(data1)
+print(data[1])
+print(data[2])
+data.pop(0)
+data.pop(1)
+
+df = pd.DataFrame(data,columns=data[2])
+
+writer=pd.ExcelWriter('data1.xlsx')
+df.to_excel(writer,'Sheet1')
+writer.save()
+
+print(data)
+print(df)
