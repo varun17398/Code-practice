@@ -9,6 +9,7 @@ from nltk.corpus import stopwords
 sw=stopwords.words("english")
 #data=[]
 f=open("cmnts.txt","r")
+#f has the comments file
 data=f.read()
 data=data.lower()
 l=[]
