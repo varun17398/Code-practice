@@ -35,7 +35,6 @@ import os
 
 # In[14]:
 
-
 from textblob import TextBlob
 import nltk.classify.util
 from nltk.classify import NaiveBayesClassifier
