@@ -37,6 +37,7 @@ c = column_names if len(column_names) > 0 else range(0,n_columns)
 
 newtable=pd.DataFrame(columns=c,index=range(0,n_rows))
 print(newtable[3][4])
+
 rowmarker=0
 
 for i in table.find_all('tr'):
