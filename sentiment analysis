@@ -36,6 +36,7 @@ def word_feats(words):
     return dict([(word,True) for word in words])
 
 
+#opening file
 p=open("pos.txt","r")
 post=p.read()
 positivewords=post.split("\n")
