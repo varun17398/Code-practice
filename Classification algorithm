@@ -1,0 +1,80 @@
+import pandas as pd
+
+train=pd.read_excel('E:\\Long Forms\\Telangana 2009 candidate details.xlsx')
+test=pd.read_excel('E:\\Long Forms\\Telangana2014testdata.xlsx')
+
+l1=['Name','Rank']
+l2=['Name','Rank']
+
+#train['Party']=list(map(float,train['Party']))
+
+from sklearn.feature_extraction.text import CountVectorizer
+
+#print(type(train['Name']))
+vectorizer=CountVectorizer()
+trainparty=train['Party']
+traindata=vectorizer.fit_transform(trainparty)
+traindata=traindata.toarray()
+train1=traindata.tolist()
+
+train['Party']=traindata
+print(type(train['Party']))
+
+trainconst=train['Constituency']
+traindata1=vectorizer.fit_transform(trainconst)
+traindata1=traindata1.toarray()
+train2=traindata1.tolist()
+
+train['Constituency']=traindata1
+print(type(train['Constituency']))
+
+testparty=test['Party']
+testdata=vectorizer.fit_transform(testparty)
+testdata=testdata.toarray()
+#train1=traindata.tolist()
+
+test['Party']=testdata
+print(type(test['Party']))
+
+testconst=test['Constituency']
+testdata1=vectorizer.fit_transform(testconst)
+testdata1=testdata1.toarray()
+#train1=traindata.tolist()
+
+test['Constituency']=testdata1
+print(type(test['Constituency']))
+
+#traingender=train['Gender']
+#traindata2=vectorizer.fit_transform(traingender)
+#traindata2=traindata2.toarray()
+
+#train['Gender']=tarindata2
+#print(type(train['Gender']))
+
+
+#train['Party']=list(vector.toarray())
+
+x_train=train.drop(l1,axis=1)
+y_train=test['Rank']
+x_test=test.drop(l2,axis=1)
+
+from sklearn import tree
+
+model=tree.DecisionTreeClassifier()
+
+model.fit(x_train,y_train)
+
+print(model.score(x_train,y_train))
+
+predicted=model.predict(x_test)
+
+pre=pd.Series(predicted)
+
+test['Rank after Prediction']=pre.values
+
+writer=pd.ExcelWriter('E:\\Long Forms\\Telangana2014testdatapredicted.xlsx')
+test.to_excel(writer,'Sheet1')
+writer.save()
+
+
+#print(df)
